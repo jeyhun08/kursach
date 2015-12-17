@@ -1,0 +1,203 @@
+﻿<!DOCTYPE html>
+<html ng-app="app">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Angular</title>
+    <!--theme: Bootstrap 3, Bootstrap 2, default-->
+    <link href="libs/bootstrap/3.0.0/css/bootstrap.css" rel="stylesheet" media="screen">
+    <!--xeditable css-->
+    <link href="dist/css/xeditable.css" rel="stylesheet" media="screen">
+    <!--docs css-->
+    <link href="docs/css/docs.css" rel="stylesheet" media="screen">
+    <style type="text/css">
+	
+    body,td,th {
+	color: #333333;
+}
+    body {
+	background-color: #999999;
+	margin-left: 0cm;
+	margin-right: 0px;
+}
+    </style>
+    <!--angular-->
+    <script src="libs/angular/1.2.7/angular.js"></script>
+    <script src="libs/angular/1.2.7/angular-mocks.js"></script>
+    <!--jquery (needed for bootstrap)-->
+    <script src="libs/jquery/jquery-1.10.2.min.js"></script>
+    <!--bootstrap-->
+    <script src="libs/bootstrap/3.0.0/js/bootstrap.js"></script>
+    <!--angular-ui-bootstrap-->
+    <script src="libs/angular-ui/bootstrap/ui-bootstrap-tpls-0.6.0.min.js"></script>
+    <!--google-code-prettify-->
+    <script src="libs/google-code-prettify/run_prettify.js"></script>
+    <!--checklist-model-->
+    <script src="libs/checklist-model.js"></script>
+    <!--app-->
+    <script src="docs/js/app.js"></script>
+    <!--xeditable-->
+    <script src="dist/js/xeditable.min.js"></script>
+  </head><body background="01.jpg">
+ 
+ 
+
+                    <section id="editable-row">
+  <blockquote>
+    <h1> ХНЭУ им. С. Кузнеца </h1>
+  </blockquote>
+                      <!-- watch change of user to update rootScope for debugging-->
+  <blockquote>
+    <h3> Электронный журнал (ф-т Экономической информатики)</h3>
+  </blockquote>
+                      <div class="well line-example"><div ng-controller="EditableRowCtrl">
+  <table class="table table-bordered table-hover table-condensed">
+    <tr style="font-weight: bold">
+      <td style="width:35%">Фамилия Имя студента</td>
+      <td style="width:20%">Оценки</td>
+      <td style="width:20%">Посещения</td>
+      <td style="width:25%">Править</td>
+    </tr>
+    <tr ng-repeat="user in users">
+	
+		<div class="tabbable"> <!-- Only required for left/right tabs -->
+  <ul class="nav nav-tabs">
+    <li><a  href="Index.html">Группа 6.04.61.12.01</a></li>
+	 <li><a  href="Index1.html">6.04.51.12.02</a></li>
+	  <li><a  href="Index2.html">6.04.16.12.01</a></li>
+	   <li class="active"><a  href="Index3.html">6.04.04.12.01</a></li>
+	    <li><a  href="Index4.html">6.04.51.12.01</a></li>
+  </ul>
+  <div class="tab-content">
+    <div class="tab-pane active" id="tab1">
+      <p>Мобільні технології</p>
+    </div>
+    <div class="tab-pane" id="tab2">
+      <p></p>
+    </div>
+	<div class="tab-pane" id="tab3">
+      <p></p>
+    </div>
+	<div class="tab-pane" id="tab4">
+      <p></p>
+    </div>
+	<div class="tab-pane" id="tab5">
+      <p></p>
+    </div>
+  </div>
+</div>
+	
+      <td>
+        <!-- editable username (text with validation) -->
+        <span editable-text="user.name" e-name="name" e-form="rowform" onbeforesave="checkName($data, user.id)" e-required>
+          {{ user.name || 'empty' }}
+        </span>
+      </td>
+      <td>
+        <!-- editable status (select-local) -->
+        <span editable-select="user.status" e-name="status" e-form="rowform" e-ng-options="s.value as s.text for s in statuses">
+          {{ showStatus(user) }}
+        </span>
+      </td>
+      <td>
+        <!-- editable group (select-remote) -->
+        <span editable-select="user.group" e-name="group" onshow="loadGroups()" e-form="rowform" e-ng-options="g.id as g.text for g in groups">
+          {{ showGroup(user) }}
+        </span>
+      </td>
+	  
+	  
+	  
+      <td style="white-space: nowrap">
+        <!-- form -->
+        <form editable-form name="rowform" onbeforesave="saveUser($data, user.id)" ng-show="rowform.$visible" class="form-buttons form-inline" shown="inserted == user">
+          <button type="submit" ng-disabled="rowform.$waiting" class="btn btn-primary">
+           Сохранить
+          </button>
+          <button type="button" ng-disabled="rowform.$waiting" ng-click="rowform.$cancel()" class="btn btn-default">
+            Отменить
+          </button>
+        </form>
+        <div class="buttons" ng-show="!rowform.$visible">
+          <button class="btn btn-primary" ng-click="rowform.$show()">Редактировать</button>
+          <button class="btn btn-danger" ng-click="removeUser($index)">Удалить</button>
+        </div>  
+      </td>
+    </tr>
+  </table>
+
+  <button class="btn btn-default" ng-click="addUser()">Добавить поля</button>
+</div></div>
+                      <p><p></a></p>
+</p>
+                      <!--script(src=dir+'/controller.js')-->
+                      <script>app.controller('EditableRowCtrl', function($scope, $filter, $http) {
+  $scope.users = [
+    {id: 1, name: 'ФИО', status: '',},
+    {id: 2, name: 'ФИО', status: '',},
+    {id: 3, name: 'ФИО', status: '',}
+  ]; 
+
+  $scope.statuses = [
+    {value: 1, text: 'Плохо'},
+    {value: 2, text: 'Нормально'},
+    {value: 3, text: 'Хорошо'},
+    {value: 4, text: 'Отлично'}
+	
+  ]; 
+
+  $scope.groups = [];
+  $scope.loadGroups = function() {
+    return $scope.groups.length ? null : $http.get('/groups').success(function(data) {
+      $scope.groups = data;
+    });
+  };
+
+  $scope.showGroup = function(user) {
+    if(user.group && $scope.groups.length) {
+      var selected = $filter('filter')($scope.groups, {id: user.group});
+      return selected.length ? selected[0].text : 'Not set';
+    } else {
+      return user.groupName || 'Not set';
+    }
+  };
+
+  $scope.showStatus = function(user) {
+    var selected = [];
+    if(user.status) {
+      selected = $filter('filter')($scope.statuses, {value: user.status});
+    }
+    return selected.length ? selected[0].text : 'Not set';
+  };
+
+ 
+
+  $scope.saveUser = function(data, id) {
+    //$scope.user not updated yet
+    angular.extend(data, {id: id});
+    return $http.post('/saveUser', data);
+  };
+
+  // remove user
+  $scope.removeUser = function(index) {
+    $scope.users.splice(index, 1);
+  };
+
+  // add user
+  $scope.addUser = function() {
+    $scope.inserted = {
+      id: $scope.users.length+1,
+      name: '',
+      status: null,
+      group: null 
+    };
+    $scope.users.push($scope.inserted);
+  };
+});</script>
+                     
+</script>
+
+
+
+  </body>
+</html>
